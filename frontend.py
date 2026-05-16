@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 from datetime import datetime
-API_URL="http://127.0.0.1:8000/predict"
+API_URL="https://autoworthai.onrender.com/predict"
 
 st.title("Car Price Prediction")
 st.markdown("Enter the details to predict the car price: ")
