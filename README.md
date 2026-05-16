@@ -1,99 +1,269 @@
 # AutoWorth AI
 
-ML-Based Car Price Estimator
+### ML-Based Car Price Estimator
 
-AutoWorth AI is a end-to-end machine learning application that estimates the price of a used car from structured vehicle attributes. It combines a FastAPI backend, a Streamlit front end, Pydantic-based request validation, and a scikit-learn preprocessing and regression pipeline for predictions.
+AutoWorth AI is an end-to-end machine learning application that estimates the price of a used car from structured vehicle attributes. The project combines a FastAPI backend, a Streamlit frontend, Pydantic-based request validation, and a scikit-learn preprocessing and regression pipeline for real-time predictions.
 
-## Executive Summary
+---
 
-This project demonstrates the implementation of an applied ML product, not just a standalone model. The system accepts structured vehicle details, validates and normalizes the input, derives car age automatically, and serves predictions through a clean REST API.
+# Live Deployment
 
-## What This Project Shows
+### Frontend (Streamlit)
+https://autoworthai.streamlit.app/
 
-- End-to-end machine learning application design
-- API development with FastAPI
-- Form-driven UI with Streamlit
-- Input validation and normalization with Pydantic
-- Model serving from a serialized artifact
-- Clean separation between frontend, backend, schema, and model logic
+### Backend API (Render)
+https://autoworth-ai-ml-based-car-price-estimator.onrender.com
 
-## Core Features
+---
 
-- Predicts a used car price from structured vehicle attributes
-- Automatically computes car age from the provided model year
-- Validates key fields such as year, odometer, manufacturer, state, and cylinders
-- Normalizes categorical inputs such as model, type, and paint color
-- Exposes a reusable prediction API for integration with other apps
-- Provides a lightweight UI for interactive use
+# Executive Summary
 
-## Architecture
+This project demonstrates the implementation of a production-style machine learning application rather than just a standalone notebook model. The system accepts structured vehicle details, validates and normalizes user input, derives engineered features such as car age, and serves predictions through a REST API.
 
-The system is organized into four main layers:
+The application showcases practical skills across:
 
-1. `frontend.py` - Streamlit application for collecting user input and displaying predictions
-2. `app.py` - FastAPI service exposing health, version, and prediction endpoints
-3. `schema/` - Pydantic request and response models
-4. `model/` - Prediction logic that loads the trained model artifact and returns the final estimate
+- Machine Learning
+- Data Preprocessing
+- Backend API Development
+- Frontend Integration
+- Deployment Engineering
+- Input Validation
+- Model Serialization
 
-## Technology Stack
+---
+
+# What This Project Demonstrates
+
+- End-to-end machine learning workflow
+- REST API development using FastAPI
+- Frontend integration using Streamlit
+- Data preprocessing and feature engineering
+- Request validation using Pydantic
+- Model deployment and serving
+- Production-oriented project structure
+
+---
+
+# Dataset
+
+Dataset used for training:
+
+- Craigslist Cars & Trucks Dataset  
+  https://www.kaggle.com/datasets/austinreese/craigslist-carstrucks-data
+
+---
+
+# Core Features
+
+- Predicts used car prices from structured vehicle attributes
+- Automatically derives `car_age` from manufacturing year
+- Handles categorical and numerical preprocessing through a serialized pipeline
+- Validates user inputs before prediction
+- Normalizes unsupported categories to fallback values where applicable
+- Provides reusable prediction API endpoints
+- Includes an interactive web interface for real-time usage
+
+---
+
+# System Architecture
+
+The application is organized into multiple layers for separation of concerns:
+
+## 1. Frontend Layer
+
+### `frontend.py`
+- Built using Streamlit
+- Collects user input
+- Sends requests to backend API
+- Displays prediction results interactively
+
+---
+
+## 2. Backend API Layer
+
+### `app.py`
+- Built using FastAPI
+- Exposes REST endpoints
+- Handles request validation
+- Returns prediction responses
+
+---
+
+## 3. Schema Layer
+
+### `schema/`
+Contains Pydantic request and response models:
+
+- `user_input.py`
+- `prediction_response.py`
+
+---
+
+## 4. Model Layer
+
+### `model/`
+Contains prediction logic and serialized ML artifacts:
+
+- `predict.py`
+- `car_price_prediction.pkl`
+
+---
+
+# Technology Stack
+
+## Backend & ML
 
 - Python
 - FastAPI
-- Streamlit
-- Pydantic
-- pandas
 - scikit-learn
+- pandas
 - NumPy
-- requests
+- Pydantic
+- Joblib
 - Uvicorn
 
-## Input Features
+## Frontend
 
-The API accepts the following car attributes:
+- Streamlit
+- requests
 
-- year
-- manufacturer
-- model
-- condition
-- fuel
-- odometer
-- title_status
-- transmission
-- drive
-- type
-- paint_color
-- state
-- no_of_cylinders
+---
 
-The backend also derives:
+# Input Features
 
-- car_age = current year - year
+The model accepts the following features:
 
-## Validation And Normalization
+| Feature | Type |
+|---|---|
+| year | Numerical |
+| manufacturer | Categorical |
+| model | Categorical |
+| condition | Categorical |
+| fuel | Categorical |
+| odometer | Numerical |
+| title_status | Categorical |
+| transmission | Categorical |
+| drive | Categorical |
+| type | Categorical |
+| paint_color | Categorical |
+| state | Categorical |
+| no_of_cylinders | Numerical |
 
-The request schema applies strict validation to keep predictions reliable:
+---
 
-- `year` must be between 1980 and the current year
+# Feature Engineering
+
+The backend automatically derives:
+
+```python
+car_age = current_year - year
+```
+
+---
+
+# Validation & Normalization
+
+The request schema performs strict validation to improve prediction reliability.
+
+## Validation Rules
+
+- `year` must be between 1980 and current year
 - `odometer` must be between 0 and 300000
-- `manufacturer` and `state` must match allowed values defined in `config/field_values.py`
-- `model`, `type`, and `paint_color` are normalized to `other` when the provided value is not in the supported list
-- `condition`, `fuel`, `title_status`, `transmission`, and `drive` are constrained to predefined categories
+- `no_of_cylinders` must be within valid limits
+- `manufacturer` and `state` must belong to supported values
 
-## API Endpoints
+## Normalization Rules
 
-### `GET /`
+Unsupported values for:
+- `model`
+- `type`
+- `paint_color`
 
-Returns a simple service message confirming that the API is running.
+are normalized to:
 
-### `GET /version`
+```python
+"other"
+```
 
-Returns the model version and whether the model artifact is loaded successfully.
+---
 
-### `POST /predict`
+# Machine Learning Pipeline
 
-Accepts a car payload and returns a predicted price.
+The serialized scikit-learn pipeline includes:
 
-Example response:
+- Missing value handling
+- One-hot encoding
+- Ordinal encoding
+- Feature selection
+- Linear Regression model
+
+Pipeline components used:
+
+- `SimpleImputer`
+- `OneHotEncoder`
+- `OrdinalEncoder`
+- `SelectKBest`
+- `LinearRegression`
+
+---
+
+# Model Performance (Baseline)
+
+| Metric | Value |
+|---|---|
+| R² Score | 0.7190 |
+| MAE | 5279.53 |
+| MSE | 56751592.44 |
+
+---
+
+# API Endpoints
+
+## `GET /`
+
+Checks whether the API is running.
+
+### Example Response
+
+```json
+{
+  "message": "Car Price Prediction API"
+}
+```
+
+---
+
+## `GET /version`
+
+Returns model version and load status.
+
+---
+
+## `POST /predict`
+
+Accepts vehicle details and returns predicted price.
+
+### Example Request
+
+```json
+{
+  "year": 2018,
+  "manufacturer": "toyota",
+  "model": "camry",
+  "condition": "good",
+  "fuel": "gas",
+  "odometer": 50000,
+  "title_status": "clean",
+  "transmission": "automatic",
+  "drive": "fwd",
+  "type": "sedan",
+  "paint_color": "white",
+  "state": "ca",
+  "no_of_cylinders": 4
+}
+```
+
+### Example Response
 
 ```json
 {
@@ -101,115 +271,155 @@ Example response:
 }
 ```
 
-## Project Structure
+---
+
+# Project Structure
 
 ```text
-AutoWorth AI - Intelligent Used Car Price Prediction System/
+AutoWorthAI/
+│
 ├── app.py
 ├── frontend.py
 ├── requirements.txt
+│
 ├── config/
 │   └── field_values.py
+│
 ├── model/
-│   └── predict.py
+│   ├── predict.py
+│   └── car_price_prediction.pkl
+│
 ├── schema/
 │   ├── user_input.py
 │   └── prediction_response.py
-└── model artifact
-    └── car_price_prediction.pkl
+│
+└── README.md
 ```
 
-## Getting Started
+---
 
-### 1. Create and activate a virtual environment
+# Installation & Setup
+
+## 1. Clone Repository
+
+```bash
+git clone <https://github.com/HARSHIDS-4/AutoWorthAI.git>
+cd AutoWorthAI
+```
+
+---
+
+## 2. Create Virtual Environment
+
+### Windows
 
 ```bash
 python -m venv .venv
 .venv\Scripts\activate
 ```
 
-### 2. Install dependencies
+### Linux / Mac
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+---
+
+## 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 3. Run the FastAPI backend
+---
+
+# Running The Application
+
+## Start FastAPI Backend
 
 ```bash
 uvicorn app:app --reload --port 8000
 ```
 
-### 4. Run the Streamlit frontend
+Backend runs on:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## Start Streamlit Frontend
 
 ```bash
 streamlit run frontend.py
 ```
 
-The Streamlit app sends prediction requests to `http://127.0.0.1:8000/predict`, so the FastAPI service should be running first.
+---
 
-## Example API Request
+# Example cURL Request
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/predict" ^
-  -H "Content-Type: application/json" ^
-  -d "{
-    \"year\": 2018,
-    \"manufacturer\": \"toyota\",
-    \"model\": \"camry\",
-    \"condition\": \"good\",
-    \"fuel\": \"gas\",
-    \"odometer\": 50000,
-    \"title_status\": \"clean\",
-    \"transmission\": \"automatic\",
-    \"drive\": \"fwd\",
-    \"type\": \"sedan\",
-    \"paint_color\": \"white\",
-    \"state\": \"ca\",
-    \"no_of_cylinders\": 4
-  }"
+-H "Content-Type: application/json" ^
+-d "{
+  \"year\": 2018,
+  \"manufacturer\": \"toyota\",
+  \"model\": \"camry\",
+  \"condition\": \"good\",
+  \"fuel\": \"gas\",
+  \"odometer\": 50000,
+  \"title_status\": \"clean\",
+  \"transmission\": \"automatic\",
+  \"drive\": \"fwd\",
+  \"type\": \"sedan\",
+  \"paint_color\": \"white\",
+  \"state\": \"ca\",
+  \"no_of_cylinders\": 4
+}"
 ```
 
-## Model Behavior
+---
 
-The predictor loads the serialized preprocessing and regression pipeline from `car_price_prediction.pkl` and generates a final price estimate after transforming categorical and numerical features.
+# Deployment
 
-## Model Performance (Baseline)
+## Backend Deployment
 
-| Metric | Value |
-|--------|-------|
-| R² Score | 0.7190100886808364 |
-| MAE | 5279.539151510923 |
-| MSE | 56751592.44492194 |
-
-## Deployment
-
-The backend API can be deployed using platforms such as Render or Railway using:
+The FastAPI backend is deployed on Render using:
 
 ```bash
 uvicorn app:app --host 0.0.0.0 --port $PORT
 ```
 
-The frontend can be deployed separately using Streamlit Community Cloud.
+---
 
-## Key Engineering Highlights
+## Frontend Deployment
 
-- Clear backend/frontend separation
-- Request validation using Pydantic
-- Reusable prediction API
-- Automatic feature engineering
-- Deployment-ready FastAPI structure
+The Streamlit frontend is deployed using Streamlit Community Cloud.
 
-## Notes
+---
 
-- The allowed categorical values are defined in `config/field_values.py`
-- The request and response contracts live in `schema/`
-- The frontend expects the API to be available locally on port `8000`
 
-## Future Improvements
+# Future Improvements
 
-- Add Docker support for one-command deployment
-- Add automated tests for validation and prediction endpoints
-- Expose the API through a hosted deployment
-- Add feature importance or explanation output for predictions
-- Persist model metrics and training metadata alongside the artifact
+- Add Docker containerization
+- Add automated API tests
+- Integrate advanced regression models (XGBoost, Random Forest)
+- Add model explainability (SHAP)
+- Add CI/CD pipeline
+- Add database logging for prediction requests
+- Add monitoring and analytics
+
+---
+
+# Author
+
+HARSHI GUPTA
+
+---
+
+# License
+
+This project is licensed under the MIT License.
