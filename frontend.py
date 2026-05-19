@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 from datetime import datetime
-API_URL="https://autoworth-ai-ml-based-car-price-estimator.onrender.com"
+API_URL="https://autoworth-ai-ml-based-car-price-estimator.onrender.com/predict"
 
 
 
