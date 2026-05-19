@@ -1,7 +1,21 @@
 import streamlit as st
 import requests
 from datetime import datetime
-API_URL="https://autoworthai.onrender.com/predict"
+API_URL="https://autoworthai-1.onrender.com"
+
+
+st.set_page_config(
+    page_title="Car Price Prediction",
+    initial_sidebar_state="expanded",
+    theme={
+        "base": "dark",
+        "primaryColor": "#FF6B35",
+        "backgroundColor": "#1a1a1a",
+        "secondaryBackgroundColor": "#2d2d2d",
+        "textColor": "#FFFFFF"
+    }
+)
+
 
 st.title("Car Price Prediction")
 st.markdown("Enter the details to predict the car price: ")
