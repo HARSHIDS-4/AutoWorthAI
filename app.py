@@ -11,6 +11,7 @@ app=FastAPI()
 def home():
     return {"message": "Car Price Prediction API"}
 
+
 @app.get("/version")
 def version():
     return {
