@@ -14,7 +14,7 @@ Predicts used car market prices from 13 vehicle attributes using a Random Forest
 |---|---|---|
 | Linear Regression (Baseline) | 0.719 | $5,279 |
 | XGBoost (best variant) | 0.841 | $3,480 |
-| **Random Forest — Final** | **0.875** | **$2,691** |
+| **Random Forest - Final** | **0.875** | **$2,691** |
 
 ## Stack
 `Python` `FastAPI` `Streamlit` `scikit-learn` `Pydantic` `Joblib` `Render`
